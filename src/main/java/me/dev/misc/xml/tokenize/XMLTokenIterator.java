@@ -274,7 +274,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
         return sb.toString();
     }
 
-    public String getNextToken() throws XMLStreamException {
+    private String getNextToken() throws XMLStreamException {
         int code = 0;
         while (code != XMLStreamReader.END_DOCUMENT) {
             code = readNext();
