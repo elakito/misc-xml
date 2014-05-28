@@ -40,6 +40,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import me.dev.misc.xml.util.AttributedQName;
 import me.dev.misc.xml.util.RecordableInputStream;
 import me.dev.misc.xml.util.StaxUtils;
 
@@ -51,7 +52,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     private static final Pattern NAMESPACE_PATTERN = Pattern.compile("xmlns(:\\w+|)\\s*=\\s*('[^']+'|\"[^\"]+\")");
 
-    private QName[] splitpath;
+    private AttributedQName[] splitpath;
     private int index;
     private boolean wrap;
     private RecordableInputStream in;
@@ -70,13 +71,13 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     public XMLTokenIterator(String path, Map<String, String> nsmap, boolean wrap, InputStream in, String charset) throws XMLStreamException {
         final String[] sl = path.substring(1).split("/");
-        this.splitpath = new QName[sl.length];
+        this.splitpath = new AttributedQName[sl.length];
         for (int i = 0; i < sl.length; i++) {
             String s = sl[i];
             if (s.length() > 0) {
                 int d = s.indexOf(':');
                 String pfx = d > 0 ? s.substring(0, d) : "";
-                this.splitpath[i] = new QName(nsmap.get(pfx), d > 0 ? s.substring(d + 1) : s, pfx);
+                this.splitpath[i] = new AttributedQName(nsmap.get(pfx), d > 0 ? s.substring(d + 1) : s, pfx);
             }
         }
         this.wrap = wrap;
@@ -107,11 +108,11 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
         return splitpath[index] == null;
     }
     
-    private QName current() {
+    private AttributedQName current() {
         return splitpath[index + (isDoS() ? 1 : 0)];
     }
     
-    private QName ancestor() {
+    private AttributedQName ancestor() {
         return index == 0 ? null : splitpath[index - 1];
     }
 
@@ -297,7 +298,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                     pushNamespaces(reader);
                 }
                 backtrack = false;
-                if (matches(name, current())) {
+                if (current().matches(name)) {
                     // mark the position of the match in the segments list
                     if (isBottom()) {
                         // final match
@@ -346,7 +347,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                     }
 
                     if ((ancestor() == null && !isTop())
-                        || (ancestor() != null && matches(endname, ancestor()))) {
+                        || (ancestor() != null && ancestor().matches(endname))) {
                         up();
                     }
                 }
@@ -362,10 +363,6 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
     private static String makeName(QName qname) {
         String pfx = qname.getPrefix();
         return pfx.length() == 0 ? qname.getLocalPart() : qname.getPrefix() + ":" + qname.getLocalPart();
-    }
-
-    private static boolean matches(QName a, QName b) {
-        return a.getNamespaceURI().equals(b.getNamespaceURI()) && a.getLocalPart().equals(b.getLocalPart());
     }
 
     @Override

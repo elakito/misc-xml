@@ -170,27 +170,27 @@ public class XMLTokenIteratorTest extends Assert {
     }
 
     @Test
-    public void testExtractChildWithAncestorGGP_GP() throws Exception {
+    public void testExtractChildWithAncestorGGPdGP() throws Exception {
         invokeAndVerify("/G:greatgrandparent/grandparent//C:child", 
                nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD_WRAPPED);
     }
 
     @Test
-    public void testExtractChildWithAncestorGGP_P() throws Exception {
+    public void testExtractChildWithAncestorGGPdP() throws Exception {
         invokeAndVerify("/G:greatgrandparent//C:parent/C:child", 
                nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD_WRAPPED);
 
     }
 
     @Test
-    public void testExtractChildWithAncestorGP__P() throws Exception {
+    public void testExtractChildWithAncestorGPddP() throws Exception {
         invokeAndVerify("//grandparent//C:parent/C:child", 
                nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD_WRAPPED);
 
     }
 
     @Test
-    public void testExtractChildWithAncestorGP_P() throws Exception {
+    public void testExtractChildWithAncestorGPdP() throws Exception {
         invokeAndVerify("//grandparent/C:parent/C:child", 
                nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD_WRAPPED);
 
@@ -203,7 +203,7 @@ public class XMLTokenIteratorTest extends Assert {
     }
 
     @Test
-    public void testExtractChildWithAncestorGGP_GP_P() throws Exception {
+    public void testExtractChildWithAncestorGGPdGPdP() throws Exception {
         invokeAndVerify("/G:greatgrandparent/grandparent/C:parent/C:child", 
                nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD_WRAPPED);
     }
@@ -220,6 +220,18 @@ public class XMLTokenIteratorTest extends Assert {
                nsmap, false, new ByteArrayInputStream(DATA), "utf-8", RESULTS_PARENT);
     }
     
+    @Test
+    public void textExtractAuntWC1() throws Exception {
+        invokeAndVerify("//a*t", 
+               nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_AUNT_WRAPPED);
+    }
+
+    @Test
+    public void textExtractAuntWC2() throws Exception {
+        invokeAndVerify("//au?t", 
+               nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_AUNT_WRAPPED);
+    }
+
     @Test
     public void textExtractAunt() throws Exception {
         invokeAndVerify("//aunt", 
