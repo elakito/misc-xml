@@ -271,7 +271,8 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
             sb.append(token.substring(0, stag.length() - (empty ? 2 : 1)));
             for (Entry<String, String> e : getCurrentNamespaceBindings().entrySet()) {
                 if (!skip.contains(e.getKey())) {
-                    sb.append(" xmlns:").append(e.getKey()).append("=").append(quote).append(e.getValue()).append(quote);
+                    sb.append(e.getKey().length() == 0 ? " xmlns" : " xmlns:")
+                    .append(e.getKey()).append("=").append(quote).append(e.getValue()).append(quote);
                 }
             }
             sb.append(token.substring(stag.length() - (empty ? 2 : 1)));
