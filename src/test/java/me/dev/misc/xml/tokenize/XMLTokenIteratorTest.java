@@ -323,7 +323,7 @@ public class XMLTokenIteratorTest extends Assert {
                nsmap, 'u', new ByteArrayInputStream(DATA), "utf-8", RESULTS_AUNT_UNWRAPPED);
     }
 
-    private static void invokeAndVerify(String path, Map<String, String> nsmap, int mode,
+    private static void invokeAndVerify(String path, Map<String, String> nsmap, char mode,
                                         InputStream in, String charset, String[] expected) 
         throws Exception {
 

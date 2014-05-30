@@ -46,7 +46,12 @@ import me.dev.misc.xml.util.RecordableInputStream;
 import me.dev.misc.xml.util.StaxUtils;
 
 /**
- * 
+ * An iterator to extract a specific XML content/token. The token to be extracted
+ * is specified using a path notation that looks like a unix path but uses QNames
+ * as in xpath. There are three extraction modes: inject, wrap, and unwrap. The
+ * inject mode injects the namespace bindings to the extracted node. The wrap mode
+ * wraps the extracted node with its ancestor elements. The unwrap mode unwraps the
+ * start ane end tags from the extracted node.
  */
 public class XMLTokenIterator implements Iterator<Object>, Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(XMLTokenIterator.class);
@@ -55,7 +60,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     private AttributedQName[] splitpath;
     private int index;
-    private int mode;
+    private char mode;
     private RecordableInputStream in;
     private XMLStreamReader reader;
     private List<QName> path;
@@ -70,7 +75,17 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     private Object nextToken;
 
-    public XMLTokenIterator(String path, Map<String, String> nsmap, int mode, InputStream in, String charset) throws XMLStreamException {
+    /**
+     * Constructs an XML token iterator.
+     * 
+     * @param path the unix like path notation using the QNames
+     * @param nsmap the namespace binding map
+     * @param mode the extraction mode. One of 'i', 'w', and 'u', representing inject, wrap, and unwrap 
+     * @param in the input stream
+     * @param charset the character encoding
+     * @throws XMLStreamException
+     */
+    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, InputStream in, String charset) throws XMLStreamException {
         final String[] sl = path.substring(1).split("/");
         this.splitpath = new AttributedQName[sl.length];
         for (int i = 0; i < sl.length; i++) {
