@@ -86,7 +86,7 @@ public class XMLTokenIteratorTest extends Assert {
             + "<c:parent some_attr='3' xmlns:c='urn:c' xmlns:d=\"urn:d\">"
             + "<c:child some_attr='f' anotherAttr='f'/>"
             + "</c:parent></grandparent></g:greatgrandparent>"
-};
+    };
 
     private static final String[] RESULTS_CHILD = {
         "<c:child some_attr='a' anotherAttr='a' xmlns:g=\"urn:g\" xmlns:d=\"urn:d\" xmlns:c=\"urn:c\"></c:child>",
@@ -147,6 +147,8 @@ public class XMLTokenIteratorTest extends Assert {
         "<aunt xmlns:g=\"urn:g\"/>"
     };    
 
+    private static final String[] RESULTS_NULL = {
+    };
 
     private Map<String, String> nsmap;
     
@@ -167,6 +169,18 @@ public class XMLTokenIteratorTest extends Assert {
     public void testExtractChildInjected() throws Exception {
         invokeAndVerify("//C:child", 
                nsmap, false, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD);
+    }
+
+    @Test
+    public void testExtractAnyChild() throws Exception {
+        invokeAndVerify("//*:child", 
+               nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD_WRAPPED);
+    }
+
+    @Test
+    public void testExtractUnqualifiedChild() throws Exception {
+        invokeAndVerify("//child", 
+               nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_NULL);
     }
 
     @Test

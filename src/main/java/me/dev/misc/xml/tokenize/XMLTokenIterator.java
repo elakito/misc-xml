@@ -34,6 +34,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
+import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -77,7 +78,9 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
             if (s.length() > 0) {
                 int d = s.indexOf(':');
                 String pfx = d > 0 ? s.substring(0, d) : "";
-                this.splitpath[i] = new AttributedQName(nsmap.get(pfx), d > 0 ? s.substring(d + 1) : s, pfx);
+                this.splitpath[i] = 
+                    new AttributedQName(
+                        "*".equals(pfx) ? "*" : nsmap.get(pfx), d > 0 ? s.substring(d + 1) : s, pfx);
             }
         }
         this.wrap = wrap;
@@ -86,7 +89,9 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
         this.reader = StaxUtils.createXMLStreamReader(this.in);
 
         LOG.trace("reader.class = {}", reader.getClass());
-        if (reader.getLocation().getCharacterOffset() < 0) {
+
+        int coff = reader.getLocation().getCharacterOffset();
+        if (coff != 0) {
             LOG.error("XMLStreamReader {} not supporting Location");
             throw new XMLStreamException("reader not supporting Location");
         }
@@ -277,11 +282,11 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     private String getNextToken() throws XMLStreamException {
         int code = 0;
-        while (code != XMLStreamReader.END_DOCUMENT) {
+        while (code != XMLStreamConstants.END_DOCUMENT) {
             code = readNext();
 
             switch (code) {
-            case XMLStreamReader.START_ELEMENT:
+            case XMLStreamConstants.START_ELEMENT:
                 depth++;
                 QName name = reader.getName();
                 if (LOG.isTraceEnabled()) {
@@ -317,7 +322,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                     readCurrent(false);
                 }
                 break;
-            case XMLStreamReader.END_ELEMENT:
+            case XMLStreamConstants.END_ELEMENT:
                 depth--;
                 QName endname = reader.getName();
                 LOG.trace("ee={}", endname);
@@ -352,7 +357,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                     }
                 }
                 break;
-            case XMLStreamReader.END_DOCUMENT:
+            case XMLStreamConstants.END_DOCUMENT:
                 LOG.trace("depth={}", depth);
                 break;
             }

@@ -21,47 +21,51 @@ package me.dev.misc.xml.util;
 
 import java.util.regex.Pattern;
 
+import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
 /**
  * An extended QName to be used to pattern matching on the local part.
  */
 public class AttributedQName extends QName {
+    private static final long serialVersionUID = 9878370226894144L;
     private Pattern lcpattern;
+    private boolean nsany;
     
     public AttributedQName(String localPart) {
         super(localPart);
-        checkWildcard(localPart);
+        checkWildcard(XMLConstants.NULL_NS_URI, localPart);
     }
 
     public AttributedQName(String namespaceURI, String localPart, String prefix) {
         super(namespaceURI, localPart, prefix);
-        checkWildcard(localPart);
+        checkWildcard(namespaceURI, localPart);
     }
 
     public AttributedQName(String namespaceURI, String localPart) {
         super(namespaceURI, localPart);
-        checkWildcard(localPart);
+        checkWildcard(namespaceURI, localPart);
     }
 
     public boolean matches(QName qname) {
-        return getNamespaceURI().equals(qname.getNamespaceURI())
+        return (nsany || getNamespaceURI().equals(qname.getNamespaceURI()))
             && (lcpattern != null 
             ? lcpattern.matcher(qname.getLocalPart()).matches() 
             : getLocalPart().equals(qname.getLocalPart()));
     }
     
-    private void checkWildcard(String p) {
+    private void checkWildcard(String nsa, String lcp) {
+        nsany = "*".equals(nsa);
         boolean wc = false;
-        for (int i = 0; i < p.length(); i++) {
-            char c = p.charAt(i);
+        for (int i = 0; i < lcp.length(); i++) {
+            char c = lcp.charAt(i);
             if (c == '?' || c == '*') {
                 wc = true;
                 break;
             }
         }
         if (wc) {
-            lcpattern = Pattern.compile(p.replace("*", ".*").replace("?", "."));
+            lcpattern = Pattern.compile(lcp.replace("*", ".*").replace("?", "."));
         }
     }
 }
