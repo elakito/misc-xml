@@ -178,6 +178,12 @@ public class XMLTokenIteratorTest extends Assert {
     }
 
     @Test
+    public void testExtractCxxxd() throws Exception {
+        invokeAndVerify("//C:c*d", 
+               nsmap, false, new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD);
+    }
+
+    @Test
     public void testExtractUnqualifiedChild() throws Exception {
         invokeAndVerify("//child", 
                nsmap, true, new ByteArrayInputStream(DATA), "utf-8", RESULTS_NULL);
