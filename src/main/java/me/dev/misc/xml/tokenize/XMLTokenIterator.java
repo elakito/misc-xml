@@ -55,7 +55,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     private AttributedQName[] splitpath;
     private int index;
-    private boolean wrap;
+    private int mode;
     private RecordableInputStream in;
     private XMLStreamReader reader;
     private List<QName> path;
@@ -70,7 +70,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     private Object nextToken;
 
-    public XMLTokenIterator(String path, Map<String, String> nsmap, boolean wrap, InputStream in, String charset) throws XMLStreamException {
+    public XMLTokenIterator(String path, Map<String, String> nsmap, int mode, InputStream in, String charset) throws XMLStreamException {
         final String[] sl = path.substring(1).split("/");
         this.splitpath = new AttributedQName[sl.length];
         for (int i = 0; i < sl.length; i++) {
@@ -83,7 +83,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                         "*".equals(pfx) ? "*" : nsmap.get(pfx), d > 0 ? s.substring(d + 1) : s, pfx);
             }
         }
-        this.wrap = wrap;
+        this.mode = mode != 0 ? mode : 'i';
         this.in = new RecordableInputStream(in, charset);
         // use a local staxutils to create a stream reader. This can be replaced if other means is available
         this.reader = StaxUtils.createXMLStreamReader(this.in);
@@ -98,10 +98,10 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
         this.path = new ArrayList<QName>();
         // wrapped mode needs the segments and the injected mode needs the namespaces
-        if (wrap) {
+        if (this.mode == 'w') {
             this.segments = new ArrayList<String>();
             this.segmentlog = new ArrayList<QName>();
-        } else {
+        } else if (this.mode == 'i') {
             this.namespaces = new ArrayList<Map<String, String>>();
         }
 
@@ -230,16 +230,15 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
         popName();
         
         String token = createContextualToken(getCurrenText());
-        if (!wrap) {
+        if (mode == 'i') {
             popNamespaces();
         }
-        
         return token;
     }
 
     private String createContextualToken(String token){
         StringBuilder sb = new StringBuilder();
-        if (wrap) {
+        if (mode == 'w') {
             for (int i = 0; i < segments.size(); i++) {
                 sb.append(segments.get(i));
             }
@@ -249,7 +248,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 sb.append("</").append(makeName(q)).append(">");
             }
 
-        } else {
+        } else if (mode == 'i') {
             final String stag = token.substring(0, token.indexOf('>') + 1);
             Set<String> skip = new HashSet<String>();
             Matcher matcher = NAMESPACE_PATTERN.matcher(stag);
@@ -276,6 +275,12 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 }
             }
             sb.append(token.substring(stag.length() - (empty ? 2 : 1)));
+        } else if (mode == 'u') {
+            int bp = token.indexOf(">");
+            int ep = token.lastIndexOf("</");
+            if (bp > 0 && ep > 0) {
+                sb.append(token.substring(bp + 1, ep));
+            }
         }
 
         return sb.toString();
@@ -296,11 +301,11 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
                 String token = getCurrenText();
                 LOG.trace("token={}", token);
-                if (!backtrack && wrap) {
+                if (!backtrack && mode == 'w') {
                     pushSegment(name, token);
                 }
                 pushName(name);
-                if (!wrap) {
+                if (mode == 'i') {
                     pushNamespaces(reader);
                 }
                 backtrack = false;
@@ -328,7 +333,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 QName endname = reader.getName();
                 LOG.trace("ee={}", endname);
                 popName();
-                if (!wrap) {
+                if (mode == 'i') {
                     popNamespaces();
                 }
                 
@@ -337,7 +342,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                     // reactive backtrack if not backtracking and update the track depth
                     backtrack = true;
                     trackdepth--;
-                    if (wrap) {
+                    if (mode == 'w') {
                         while (!endname.equals(peekLog())) {
                             pc++;
                             popLog();
@@ -346,7 +351,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 }
 
                 if (backtrack) {
-                    if (wrap) {
+                    if (mode == 'w') {
                         for (int i = 0; i < pc; i++) {
                             popSegment();
                         }
