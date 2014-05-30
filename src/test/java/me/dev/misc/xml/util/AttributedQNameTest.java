@@ -58,16 +58,19 @@ public class AttributedQNameTest extends Assert {
         assertTrue(aqname.matches(new QName("urn:foo", "patia")));
         assertFalse(aqname.matches(new QName("urn:foo", "patricia")));
 
+        aqname = new AttributedQName("urn:foo", "de.petra");
+        assertTrue(aqname.matches(new QName("urn:foo", "de.petra")));
+
+        aqname = new AttributedQName("urn:foo", "de.pe*");
+        assertTrue(aqname.matches(new QName("urn:foo", "de.petra")));
+        assertTrue(aqname.matches(new QName("urn:foo", "de.peach")));
+        assertFalse(aqname.matches(new QName("urn:foo", "delpeach")));
+
         // matches any namespaces qualified and unqualified
         aqname = new AttributedQName("*", "p*a");
         assertTrue(aqname.matches(new QName("urn:foo", "petra")));
         assertTrue(aqname.matches(new QName("urn:bar", "patia")));
         assertTrue(aqname.matches(new QName("", "patricia")));
         assertFalse(aqname.matches(new QName("urn:bar", "peach")));
-
-        // matches only the unqualified namespace
-        aqname = new AttributedQName("", "p*a");
-        assertFalse(aqname.matches(new QName("urn:foo", "petra")));
-        assertTrue(aqname.matches(new QName("", "petra")));
     }
 }

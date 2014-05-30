@@ -65,7 +65,7 @@ public class AttributedQName extends QName {
             }
         }
         if (wc) {
-            lcpattern = Pattern.compile(lcp.replace("*", ".*").replace("?", "."));
+            lcpattern = Pattern.compile(lcp.replace(".", "\\.").replace("*", ".*").replace("?", "."));
         }
     }
 }
