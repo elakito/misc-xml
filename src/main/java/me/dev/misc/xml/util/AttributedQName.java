@@ -65,7 +65,25 @@ public class AttributedQName extends QName {
             }
         }
         if (wc) {
-            lcpattern = Pattern.compile(lcp.replace(".", "\\.").replace("*", ".*").replace("?", "."));
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < lcp.length(); i++) {
+                char c = lcp.charAt(i);
+                switch (c) {
+                case '.':
+                    sb.append("\\.");
+                    break;
+                case '*':
+                    sb.append(".*");
+                    break;
+                case '?':
+                    sb.append('.');
+                    break;
+                default:
+                    sb.append(c);
+                    break;
+                }
+            }
+            lcpattern = Pattern.compile(sb.toString());
         }
     }
 }
