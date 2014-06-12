@@ -29,12 +29,24 @@ import org.junit.Test;
  */
 public class RecordableInputStreamTest extends Assert {
     private static final byte[] DATA;
+    private static final byte[] DATA_ISO8859; 
+    private static final byte[] DATA_UTF8; 
     
     static {
         DATA = new byte[512];
         final int radix = 0x7f - 0x20;
         for (int i = 0; i < 512; i++) {
             DATA[i] = (byte) (i % radix + 0x20);
+        }
+        
+        // [0xc0 - 0xff]
+        DATA_ISO8859 = new byte[64];
+        DATA_UTF8 = new byte[128];
+        for (int i = 0; i < 64; i++) {
+            DATA_ISO8859[i] = (byte) (i + 0xc0);
+            final int j = i << 1;
+            DATA_UTF8[j] = (byte) 0xc3;
+            DATA_UTF8[j + 1] = (byte) 0xc3;
         }
     }
     @Test
@@ -104,4 +116,63 @@ public class RecordableInputStreamTest extends Assert {
         ris.close();
     }
 
+    @Test
+    public void testReadForNoCharset() throws Exception {
+        RecordableInputStream ris = new RecordableInputStream(new ByteArrayInputStream(DATA), null);
+        assertEquals(0, ris.size());
+        byte[] buf = new byte[64];
+        
+        // read 64 bytes
+        int n = ris.read(buf, 0, buf.length);
+        assertEquals(64, n);
+        assertEquals(64, ris.size());
+
+        // consume the 64 bytes
+        String text = ris.getText(64);
+        
+        assertEquals(new String(DATA, 0, 64), text);
+        assertEquals(0, ris.size());
+        
+        ris.close();
+    }
+
+    @Test
+    public void testReadForISO8859() throws Exception {
+        RecordableInputStream ris = new RecordableInputStream(new ByteArrayInputStream(DATA_ISO8859), "iso-8859-1");
+        assertEquals(0, ris.size());
+        byte[] buf = new byte[32];
+        
+        // read 32 bytes
+        int n = ris.read(buf, 0, buf.length);
+        assertEquals(32, n);
+        assertEquals(32, ris.size());
+
+        // consume the 32 bytes
+        String text = ris.getText(32);
+        
+        assertEquals(new String(DATA_ISO8859, 0, 32, "iso-8859-1"), text);
+        assertEquals(0, ris.size());
+        
+        ris.close();
+    }
+
+    @Test
+    public void testReadForUTF8() throws Exception {
+        RecordableInputStream ris = new RecordableInputStream(new ByteArrayInputStream(DATA_UTF8), "utf-8");
+        assertEquals(0, ris.size());
+        byte[] buf = new byte[32];
+        
+        // read 32 bytes
+        int n = ris.read(buf, 0, buf.length);
+        assertEquals(32, n);
+        assertEquals(32, ris.size());
+
+        // consume the 32 bytes
+        String text = ris.getText(32);
+        
+        assertEquals(new String(DATA_UTF8, 0, 32, "utf-8"), text);
+        assertEquals(0, ris.size());
+        
+        ris.close();
+    }
 }
