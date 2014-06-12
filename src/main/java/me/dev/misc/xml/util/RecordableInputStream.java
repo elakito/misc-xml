@@ -62,7 +62,7 @@ public class RecordableInputStream extends FilterInputStream {
         String t = null;
         recording = false;
         try {
-            t = new String(buf.toByteArray(pos), charset);
+            t = new String(buf.getByteArray(), 0, pos, charset);
             buf.trim(pos, 0);
         } catch (UnsupportedEncodingException e) {
             // ignore it as this should have be caught while scanning.
@@ -95,6 +95,10 @@ public class RecordableInputStream extends FilterInputStream {
             byte[] b = new byte[len];
             System.arraycopy(buf, 0, b, 0, len);
             return b;
+        }
+
+        byte[] getByteArray() {
+            return buf;
         }
     }
 
