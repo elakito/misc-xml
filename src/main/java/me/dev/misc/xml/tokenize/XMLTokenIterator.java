@@ -48,10 +48,11 @@ import me.dev.misc.xml.util.StaxUtils;
 /**
  * An iterator to extract a specific XML content/token. The token to be extracted
  * is specified using a path notation that looks like a unix path but uses QNames
- * as in xpath. There are three extraction modes: inject, wrap, and unwrap. The
- * inject mode injects the namespace bindings to the extracted node. The wrap mode
- * wraps the extracted node with its ancestor elements. The unwrap mode unwraps the
- * start ane end tags from the extracted node.
+ * as in xpath. There are four extraction modes: inject, wrap, unwrap, and text.
+ * the inject mode 'i' injects the namespace bindings to the extracted node.
+ * The wrap mode 'w' wraps the extracted node with its ancestor elements.
+ * The unwrap 'u' mode unwraps the start ane end tags from the extracted node.
+ * The text mode 't' concatenates only the text nodes of the extract node.
  */
 public class XMLTokenIterator implements Iterator<Object>, Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(XMLTokenIterator.class);
@@ -295,6 +296,16 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
             int ep = token.lastIndexOf("</");
             if (bp > 0 && ep > 0) {
                 sb.append(token.substring(bp + 1, ep));
+            }
+        } else if (mode == 't') {
+            int bp = 0;
+            for (;;) {
+                int ep = token.indexOf('>', bp);
+                bp = token.indexOf('<', ep);
+                if (bp < 0) {
+                    break;
+                }
+                sb.append(token.substring(ep + 1, bp));
             }
         }
 

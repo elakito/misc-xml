@@ -138,41 +138,36 @@ public class RecordableInputStreamTest extends Assert {
 
     @Test
     public void testReadForISO8859() throws Exception {
-        RecordableInputStream ris = new RecordableInputStream(new ByteArrayInputStream(DATA_ISO8859), "iso-8859-1");
-        assertEquals(0, ris.size());
-        byte[] buf = new byte[32];
-        
-        // read 32 bytes
-        int n = ris.read(buf, 0, buf.length);
-        assertEquals(32, n);
-        assertEquals(32, ris.size());
-
-        // consume the 32 bytes
-        String text = ris.getText(32);
-        
-        assertEquals(new String(DATA_ISO8859, 0, 32, "iso-8859-1"), text);
-        assertEquals(0, ris.size());
-        
-        ris.close();
+        verifyReadWithCharset(DATA_ISO8859, "iso-8859-1");
     }
 
     @Test
     public void testReadForUTF8() throws Exception {
-        RecordableInputStream ris = new RecordableInputStream(new ByteArrayInputStream(DATA_UTF8), "utf-8");
+        verifyReadWithCharset(DATA_UTF8, "utf-8");
+    }
+
+    private static void verifyReadWithCharset(byte[] data, String charset) throws Exception {
+        RecordableInputStream ris = new RecordableInputStream(new ByteArrayInputStream(data), charset);
         assertEquals(0, ris.size());
         byte[] buf = new byte[32];
-        
-        // read 32 bytes
-        int n = ris.read(buf, 0, buf.length);
-        assertEquals(32, n);
-        assertEquals(32, ris.size());
+        StringBuilder sb = new StringBuilder();
 
-        // consume the 32 bytes
-        String text = ris.getText(32);
-        
-        assertEquals(new String(DATA_UTF8, 0, 32, "utf-8"), text);
-        assertEquals(0, ris.size());
-        
+        for (int i = 0; i < data.length / buf.length; i++) {
+            // read 32 bytes
+            int n = ris.read(buf, 0, buf.length);
+            assertEquals(32, n);
+            assertEquals(32, ris.size());
+
+            // consume the 32 bytes
+            String text = ris.getText(32);
+            ris.record();
+
+            sb.append(text);
+            assertEquals(0, ris.size());
+        }
+
+        assertEquals(new String(data, charset), sb.toString());
+
         ris.close();
     }
 }

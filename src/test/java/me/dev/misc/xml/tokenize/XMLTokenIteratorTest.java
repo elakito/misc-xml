@@ -188,6 +188,11 @@ public class XMLTokenIteratorTest extends Assert {
         ""
     };
 
+    private static final String[] RESULTS_GRANDPARENT_TEXT = {
+        "emma",
+        "ben"
+    };
+
     private static final String[] RESULTS_NULL = {
     };
 
@@ -321,6 +326,12 @@ public class XMLTokenIteratorTest extends Assert {
     public void testExtractAuntUnwrapped() throws Exception {
         invokeAndVerify("//aunt", 
                nsmap, 'u', new ByteArrayInputStream(DATA), "utf-8", RESULTS_AUNT_UNWRAPPED);
+    }
+
+    @Test
+    public void testExtractGrandParentText() throws Exception {
+        invokeAndVerify("//grandparent", 
+               nsmap, 't', new ByteArrayInputStream(DATA), "utf-8", RESULTS_GRANDPARENT_TEXT);
     }
 
     private static void invokeAndVerify(String path, Map<String, String> nsmap, char mode,
