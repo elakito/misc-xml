@@ -55,6 +55,7 @@ public class XMLTokenIteratorTest extends Assert {
         + "</grandparent>"
         + "</g:greatgrandparent>").getBytes();
 
+    // mixing a default namespace with an explicit namespace for child
     private static final byte[] DATA_NS_MIXED = (
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:greatgrandparent xmlns:g='urn:g'><grandparent>"
@@ -69,7 +70,22 @@ public class XMLTokenIteratorTest extends Assert {
         + "</grandparent>"
         + "</g:greatgrandparent>").getBytes();
 
-    private static final String[] RESULTS_CHILD_WRAPPED = {
+    // mixing a no namespace with an explicit namespace for child
+    private static final byte[] DATA_NO_NS_MIXED =
+        ("<?xml version='1.0' encoding='UTF-8'?>"
+            + "<g:greatgrandparent xmlns:g='urn:g'><grandparent>"
+            + "<parent some_attr='1' xmlns:c='urn:c' xmlns=\"urn:c\">"
+            + "<child some_attr='a' anotherAttr='a' xmlns=''></child>"
+            + "<x:child xmlns:x='urn:c' some_attr='b' anotherAttr='b'/>"
+            + "</parent>"
+            + "<c:parent some_attr='2' xmlns:c='urn:c'>"
+            + "<child some_attr='c' anotherAttr='c'></child>"
+            + "<c:child some_attr='d' anotherAttr='d'/>"
+            + "</c:parent>"
+            + "</grandparent>"
+            + "</g:greatgrandparent>").getBytes();
+
+   private static final String[] RESULTS_CHILD_WRAPPED = {
         "<?xml version='1.0' encoding='UTF-8'?>"
             + "<g:greatgrandparent xmlns:g='urn:g'><grandparent><uncle/><aunt>emma</aunt>"
             + "<c:parent some_attr='1' xmlns:c='urn:c' xmlns:d=\"urn:d\">"
@@ -131,6 +147,20 @@ public class XMLTokenIteratorTest extends Assert {
         "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
         + "<c:parent some_attr='2' xmlns:c='urn:c'>"
         + "<c:child some_attr='d' anotherAttr='d'/></c:parent></grandparent></g:greatgrandparent>"
+    };
+
+    private static final String[] RESULTS_CHILD_NO_NS_MIXED = {
+        "<child some_attr='a' anotherAttr='a' xmlns='' xmlns:g='urn:g' xmlns:c='urn:c'></child>",
+        "<child some_attr='c' anotherAttr='c' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"></child>",
+    };
+
+    private static final String[] RESULTS_CHILD_NO_NS_MIXED_WRAPPED = {
+        "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
+            + "<parent some_attr='1' xmlns:c='urn:c' xmlns=\"urn:c\">"
+            + "<child some_attr='a' anotherAttr='a' xmlns=''></child></parent></grandparent></g:greatgrandparent>",
+        "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
+            + "<c:parent some_attr='2' xmlns:c='urn:c'>"
+            + "<child some_attr='c' anotherAttr='c'></child></c:parent></grandparent></g:greatgrandparent>",
     };
 
     private static final String[] RESULTS_PARENT_WRAPPED = {
@@ -245,6 +275,18 @@ public class XMLTokenIteratorTest extends Assert {
     public void testExtractUnqualifiedChild() throws Exception {
         invokeAndVerify("//child", 
                nsmap, 'w', new ByteArrayInputStream(DATA), "utf-8", RESULTS_NULL);
+    }
+
+    @Test
+    public void testExtractSomeUnqualifiedChild() throws Exception {
+        invokeAndVerify("//child", 
+               nsmap, 'w', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED_WRAPPED);
+    }
+
+    @Test
+    public void testExtractSomeUnqualifiedChildInjected() throws Exception {
+        invokeAndVerify("//child", 
+               nsmap, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED);
     }
 
     @Test

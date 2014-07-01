@@ -57,7 +57,7 @@ import me.dev.misc.xml.util.StaxUtils;
 public class XMLTokenIterator implements Iterator<Object>, Closeable {
     private static final Logger LOG = LoggerFactory.getLogger(XMLTokenIterator.class);
 
-    private static final Pattern NAMESPACE_PATTERN = Pattern.compile("xmlns(:\\w+|)\\s*=\\s*('[^']+'|\"[^\"]+\")");
+    private static final Pattern NAMESPACE_PATTERN = Pattern.compile("xmlns(:\\w+|)\\s*=\\s*('[^']*'|\"[^\"]*\")");
 
     private AttributedQName[] splitpath;
     private int index;
