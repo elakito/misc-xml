@@ -154,6 +154,7 @@ public class XMLTokenIteratorTest extends Assert {
         "<child some_attr='c' anotherAttr='c' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"></child>",
     };
 
+    // note that there is no preceding sibling to the extracted child
     private static final String[] RESULTS_CHILD_NO_NS_MIXED_WRAPPED = {
         "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
             + "<parent some_attr='1' xmlns:c='urn:c' xmlns=\"urn:c\">"
@@ -161,6 +162,23 @@ public class XMLTokenIteratorTest extends Assert {
         "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
             + "<c:parent some_attr='2' xmlns:c='urn:c'>"
             + "<child some_attr='c' anotherAttr='c'></child></c:parent></grandparent></g:greatgrandparent>",
+    };
+
+    private static final String[] RESULTS_CHILD_NS_MIXED = {
+        "<x:child xmlns:x='urn:c' some_attr='b' anotherAttr='b' xmlns='urn:c' xmlns:g='urn:g' xmlns:c='urn:c'/>",
+        "<c:child some_attr='d' anotherAttr='d' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+    };
+
+    // note that there is a preceding sibling to the extracted child
+    private static final String[] RESULTS_CHILD_NS_MIXED_WRAPPED = {
+        "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
+            + "<parent some_attr='1' xmlns:c='urn:c' xmlns=\"urn:c\">"
+            + "<child some_attr='a' anotherAttr='a' xmlns=''></child>"
+            + "<x:child xmlns:x='urn:c' some_attr='b' anotherAttr='b'/></parent></grandparent></g:greatgrandparent>",
+        "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
+            + "<c:parent some_attr='2' xmlns:c='urn:c'>"
+            + "<child some_attr='c' anotherAttr='c'></child>"
+            + "<c:child some_attr='d' anotherAttr='d'/></c:parent></grandparent></g:greatgrandparent>"
     };
 
     private static final String[] RESULTS_PARENT_WRAPPED = {
@@ -287,6 +305,26 @@ public class XMLTokenIteratorTest extends Assert {
     public void testExtractSomeUnqualifiedChildInjected() throws Exception {
         invokeAndVerify("//child", 
                nsmap, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED);
+    }
+
+    @Test
+    public void testExtractSomeQualifiedChild() throws Exception {
+        nsmap.put("", "urn:c");
+        invokeAndVerify("//child", 
+               nsmap, 'w', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NS_MIXED_WRAPPED);
+    }
+
+    @Test
+    public void testExtractSomeQualifiedChildInjected() throws Exception {
+        nsmap.put("", "urn:c");
+        invokeAndVerify("//child", 
+               nsmap, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NS_MIXED);
+    }
+
+    @Test
+    public void testExtractWithNullNamespaceMap() throws Exception {
+        invokeAndVerify("//child", 
+               null, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED);
     }
 
     @Test
