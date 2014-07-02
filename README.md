@@ -13,7 +13,9 @@ Currently. it contains
   are all valid path expressions.
 
   The mode parameter determines how the extracted tokens are constructed.
+
 | mode | description |
+| ---- | ----------- |
 | i    | injecting the contextual namespace bindings into the extracted token (default) |
 | w    | wrapping the extracted token in its ancestor context |
 | u    |  unwrapping the extracted token to its child content |
