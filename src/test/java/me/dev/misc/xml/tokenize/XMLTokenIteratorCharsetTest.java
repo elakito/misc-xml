@@ -69,22 +69,22 @@ public class XMLTokenIteratorCharsetTest extends Assert {
     @Test
     public void testTokenzeWithUTF8() throws Exception {
         XMLTokenIterator tokenizer = new XMLTokenIterator("//statement", NSMAP, 'i', new ByteArrayInputStream(DATA_UTF8), "utf-8");
-        invokeAndverify(tokenizer);
+        invokeAndVerify(tokenizer);
     }
 
     @Test
     public void testTokenizeWithISOLatin() throws Exception {
         XMLTokenIterator tokenizer = new XMLTokenIterator("//statement", NSMAP, 'i', new ByteArrayInputStream(DATA_ISOLATIN), "iso-8859-1");
-        invokeAndverify(tokenizer);
+        invokeAndVerify(tokenizer);
     }
 
     @Test
     public void testTokenizeWithReader() throws Exception {
         XMLTokenIterator tokenizer = new XMLTokenIterator("//statement", NSMAP, 'i', new StringReader(DATA_STRING));
-        invokeAndverify(tokenizer);
+        invokeAndVerify(tokenizer);
     }
 
-    private void invokeAndverify(XMLTokenIterator tokenizer) throws IOException, XMLStreamException {
+    private void invokeAndVerify(XMLTokenIterator tokenizer) throws IOException, XMLStreamException {
         List<String> results = new ArrayList<String>();
         while (tokenizer.hasNext()) {
             String token = (String)tokenizer.next();            
