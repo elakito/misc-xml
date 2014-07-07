@@ -20,6 +20,7 @@
 package me.dev.misc.xml.util;
 
 import java.io.InputStream;
+import java.io.Reader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -45,6 +46,14 @@ public final class StaxUtils {
     public static XMLStreamReader createXMLStreamReader(InputStream in, String encoding) {
         try {
             return factory.createXMLStreamReader(in, encoding);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a stream reader.", e);
+        }
+
+    }
+    public static XMLStreamReader createXMLStreamReader(Reader in) {
+        try {
+            return factory.createXMLStreamReader(in);
         } catch (XMLStreamException e) {
             throw new RuntimeException("Couldn't create a stream reader.", e);
         }

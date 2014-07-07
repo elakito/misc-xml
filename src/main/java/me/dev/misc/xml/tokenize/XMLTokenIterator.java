@@ -22,6 +22,9 @@ package me.dev.misc.xml.tokenize;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,7 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import me.dev.misc.xml.util.AttributedQName;
-import me.dev.misc.xml.util.RecordableInputStream;
+import me.dev.misc.xml.util.RecordableReader;
 import me.dev.misc.xml.util.StaxUtils;
 
 /**
@@ -62,7 +65,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
     private AttributedQName[] splitpath;
     private int index;
     private char mode;
-    private RecordableInputStream in;
+    private RecordableReader in;
     private XMLStreamReader reader;
     private List<QName> path;
     private List<Map<String, String>> namespaces;
@@ -85,8 +88,24 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
      * @param in the input stream
      * @param charset the character encoding
      * @throws XMLStreamException
+     * @throws UnsupportedEncodingException 
      */
-    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, InputStream in, String charset) throws XMLStreamException {
+    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, InputStream in, String charset) 
+        throws XMLStreamException, UnsupportedEncodingException {
+        // woodstox's getLocation().etCharOffset() does not return the offset correctly for InputStream, so use Reader instead.
+        this(path, nsmap, mode, new InputStreamReader(in, charset));
+    }
+    
+    /**
+     * Constructs an XML token iterator.
+     * 
+     * @param path the unix like path notation using the QNames
+     * @param nsmap the namespace binding map
+     * @param mode the extraction mode. One of 'i', 'w', and 'u', representing inject, wrap, and unwrap 
+     * @param in the input reader
+     * @throws XMLStreamException
+     */
+    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, Reader in) throws XMLStreamException {
         final String[] sl = path.substring(1).split("/");
         this.splitpath = new AttributedQName[sl.length];
         for (int i = 0; i < sl.length; i++) {
@@ -100,7 +119,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
             }
         }
         this.mode = mode != 0 ? mode : 'i';
-        this.in = new RecordableInputStream(in, charset);
+        this.in = new RecordableReader(in);
         // use a local staxutils to create a stream reader. This can be replaced if other means is available
         this.reader = StaxUtils.createXMLStreamReader(this.in);
 
