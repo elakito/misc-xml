@@ -100,6 +100,7 @@ public final class TestDataGenerator {
                 System.arraycopy(buffer, clen, buffer, 0, buffer.length - clen);
                 bpos -= clen;
                 len -= clen;
+                off += clen;
                 tlen += clen;
             }
 
