@@ -147,27 +147,27 @@ public class RecordableInputStreamTest extends Assert {
     }
 
     private static void verifyReadWithCharset(byte[] data, String charset) throws Exception {
-        RecordableInputStream ris = new RecordableInputStream(new ByteArrayInputStream(data), charset);
-        assertEquals(0, ris.size());
+        RecordableInputStream rin = new RecordableInputStream(new ByteArrayInputStream(data), charset);
+        assertEquals(0, rin.size());
         byte[] buf = new byte[32];
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < data.length / buf.length; i++) {
             // read 32 bytes
-            int n = ris.read(buf, 0, buf.length);
+            int n = rin.read(buf, 0, buf.length);
             assertEquals(32, n);
-            assertEquals(32, ris.size());
+            assertEquals(32, rin.size());
 
             // consume the 32 bytes
-            String text = ris.getText(32);
-            ris.record();
+            String text = rin.getText(32);
+            rin.record();
 
             sb.append(text);
-            assertEquals(0, ris.size());
+            assertEquals(0, rin.size());
         }
 
         assertEquals(new String(data, charset), sb.toString());
 
-        ris.close();
+        rin.close();
     }
 }
