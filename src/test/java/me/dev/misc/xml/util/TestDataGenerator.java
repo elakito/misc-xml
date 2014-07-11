@@ -125,6 +125,7 @@ public final class TestDataGenerator {
                 bpos += len;
                 if (bpos == buffer.length) {
                     pos += len;
+                    pos %= head.length;
                     return buffer.length;
                 } else {
                     pos = 0;
@@ -147,6 +148,7 @@ public final class TestDataGenerator {
                     bpos += len;
                     if (bpos == buffer.length) {
                         pos += len;
+                        pos %= item.length;
                         return buffer.length;
                     } else {
                         pos = 0;
@@ -168,6 +170,7 @@ public final class TestDataGenerator {
                 bpos += len;
                 if (bpos == buffer.length) {
                     pos += len;
+                    pos %= tail.length;
                     return buffer.length;
                 } else {
                     pos = 0;
