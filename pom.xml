@@ -48,6 +48,7 @@
         </configuration>
       </plugin>
     </plugins>
+    <defaultGoal>install</defaultGoal>
   </build>
   <profiles>
     <profile>
@@ -63,6 +64,14 @@
           <version>${woodstox.version}</version>
         </dependency>
       </dependencies>
+    </profile>
+    <profile>
+      <id>fastinstall</id>
+      <properties>
+        <maven.test.skip>true</maven.test.skip>
+        <pmd.skip>true</pmd.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+      </properties>
     </profile>
   </profiles>
 </project>

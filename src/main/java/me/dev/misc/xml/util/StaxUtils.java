@@ -20,24 +20,29 @@
 package me.dev.misc.xml.util;
 
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Writer;
 
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 /**
  * This is a local stax utility class for providing some stax related utility methods.
  */
 public final class StaxUtils {
-    private static final XMLInputFactory factory = XMLInputFactory.newFactory();
+    private static final XMLInputFactory infactory = XMLInputFactory.newFactory();
+    private static final XMLOutputFactory outfactory = XMLOutputFactory.newFactory();
     
     private StaxUtils() {
     }
 
     public static XMLStreamReader createXMLStreamReader(InputStream in) {
         try {
-            return factory.createXMLStreamReader(in);
+            return infactory.createXMLStreamReader(in);
         } catch (XMLStreamException e) {
             throw new RuntimeException("Couldn't create a stream reader.", e);
         }
@@ -45,17 +50,43 @@ public final class StaxUtils {
 
     public static XMLStreamReader createXMLStreamReader(InputStream in, String encoding) {
         try {
-            return factory.createXMLStreamReader(in, encoding);
+            return infactory.createXMLStreamReader(in, encoding);
         } catch (XMLStreamException e) {
             throw new RuntimeException("Couldn't create a stream reader.", e);
         }
 
     }
+
     public static XMLStreamReader createXMLStreamReader(Reader in) {
         try {
-            return factory.createXMLStreamReader(in);
+            return infactory.createXMLStreamReader(in);
         } catch (XMLStreamException e) {
             throw new RuntimeException("Couldn't create a stream reader.", e);
+        }
+    }
+
+    public static XMLStreamWriter createXMLStreamWriter(OutputStream out) {
+        try {
+            return outfactory.createXMLStreamWriter(out);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a stream writer.", e);
+        }
+    }
+
+    public static XMLStreamWriter createXMLStreamWriter(OutputStream out, String encoding) {
+        try {
+            return outfactory.createXMLStreamWriter(out, encoding);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a stream writer.", e);
+        }
+
+    }
+
+    public static XMLStreamWriter createXMLStreamWriter(Writer out) {
+        try {
+            return outfactory.createXMLStreamWriter(out);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a stream writer.", e);
         }
     }
 }

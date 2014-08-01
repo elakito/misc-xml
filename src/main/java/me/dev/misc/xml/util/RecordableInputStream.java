@@ -19,7 +19,6 @@
 
 package me.dev.misc.xml.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,22 +88,4 @@ public class RecordableInputStream extends FilterInputStream {
     int size() {
         return buf.size();
     }
-
-    private static class TrimmableByteArrayOutputStream extends ByteArrayOutputStream {
-        public void trim(int head, int tail) {
-            System.arraycopy(buf, head, buf, 0, count - head - tail);
-            count -= head + tail;
-        }
-        
-        public byte[] toByteArray(int len) {
-            byte[] b = new byte[len];
-            System.arraycopy(buf, 0, b, 0, len);
-            return b;
-        }
-
-        byte[] getByteArray() {
-            return buf;
-        }
-    }
-
 }

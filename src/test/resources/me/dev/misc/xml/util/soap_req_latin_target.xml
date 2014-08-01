@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='iso-8859-1'?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <greetMe xmlns="http://cxf.apache.org/hello_world_soap_http/types">
+      <requestType>Änne</requestType>
+    </greetMe>
+  </soap:Body>
+</soap:Envelope>

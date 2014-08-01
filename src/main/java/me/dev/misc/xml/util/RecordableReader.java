@@ -19,7 +19,6 @@
 
 package me.dev.misc.xml.util;
 
-import java.io.CharArrayWriter;
 import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -76,22 +75,4 @@ public class RecordableReader extends FilterReader {
     int size() {
         return buf.size();
     }
-
-    private static class TrimmableCharArrayWriter extends CharArrayWriter {
-        public void trim(int head, int tail) {
-            System.arraycopy(buf, head, buf, 0, count - head - tail);
-            count -= head + tail;
-        }
-        
-        public char[] toCharArray(int len) {
-            char[] c = new char[len];
-            System.arraycopy(buf, 0, c, 0, len);
-            return c;
-        }
-
-        char[] getCharArray() {
-            return buf;
-        }
-    }
-
 }
