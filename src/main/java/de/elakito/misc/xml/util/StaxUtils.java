@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package me.dev.misc.xml.util;
+package de.elakito.misc.xml.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;

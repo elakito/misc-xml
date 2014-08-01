@@ -1,4 +1,4 @@
-package me.dev.misc.xml.util;
+package de.elakito.misc.xml.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package me.dev.misc.xml.tokenize;
+package de.elakito.misc.xml.tokenize;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -30,6 +30,8 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import de.elakito.misc.xml.tokenize.XMLTokenIterator;
 
 /**
  * 

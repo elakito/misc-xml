@@ -17,12 +17,14 @@
  * under the License.
  */
 
-package me.dev.misc.xml.util;
+package de.elakito.misc.xml.util;
 
 import javax.xml.namespace.QName;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import de.elakito.misc.xml.util.AttributedQName;
 
 /**
  * 

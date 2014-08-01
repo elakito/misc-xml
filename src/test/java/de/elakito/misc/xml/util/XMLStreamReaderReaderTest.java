@@ -16,10 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package me.dev.misc.xml.util;
+package de.elakito.misc.xml.util;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Arrays;
 
 import javax.xml.stream.XMLStreamReader;
@@ -27,37 +28,40 @@ import javax.xml.stream.XMLStreamReader;
 import org.junit.Assert;
 import org.junit.Test;
 
+import de.elakito.misc.xml.util.StaxUtils;
+import de.elakito.misc.xml.util.XMLStreamReaderReader;
+
 /**
  *
  */
-public class XMLStreamReaderInputStreamTest extends Assert {
+public class XMLStreamReaderReaderTest extends Assert {
 	@Test
 	public void testSampleShortUTF8() throws Exception {
 		XMLStreamReader reader = 
-				StaxUtils.createXMLStreamReader(XMLStreamReaderInputStreamTest.class.getResourceAsStream("soap_req.xml"), "utf-8");
-		XMLStreamReaderInputStream xsris = new XMLStreamReaderInputStream(reader, "utf-8");
-		verifyResult(XMLStreamReaderInputStreamTest.class.getResourceAsStream("soap_req_target.xml"), xsris);
+				StaxUtils.createXMLStreamReader(XMLStreamReaderReaderTest.class.getResourceAsStream("soap_req.xml"), "utf-8");
+		XMLStreamReaderReader xsrr = new XMLStreamReaderReader(reader);
+		verifyResult(new InputStreamReader(XMLStreamReaderReaderTest.class.getResourceAsStream("soap_req_target.xml"), "utf-8"), xsrr);
 	}
 
 	@Test
 	public void testSampleShortLatin() throws Exception {
 		XMLStreamReader reader = 
-				StaxUtils.createXMLStreamReader(XMLStreamReaderInputStreamTest.class.getResourceAsStream("soap_req_latin.xml"), "iso-8859-1");
-		XMLStreamReaderInputStream xsris = new XMLStreamReaderInputStream(reader, "iso-8859-1");
-		verifyResult(XMLStreamReaderInputStreamTest.class.getResourceAsStream("soap_req_latin_target.xml"), xsris);
+				StaxUtils.createXMLStreamReader(XMLStreamReaderReaderTest.class.getResourceAsStream("soap_req_latin.xml"), "iso-8859-1");
+		XMLStreamReaderReader xsris = new XMLStreamReaderReader(reader);
+		verifyResult(new InputStreamReader(XMLStreamReaderReaderTest.class.getResourceAsStream("soap_req_target.xml"), "utf-8"), xsris);
 	}
 
 	@Test
 	public void testSampleLong() throws Exception {
 		XMLStreamReader reader = 
-				StaxUtils.createXMLStreamReader(XMLStreamReaderInputStreamTest.class.getResourceAsStream("hello_world.wsdl"), "utf-8");
-		XMLStreamReaderInputStream xsris = new XMLStreamReaderInputStream(reader, "utf-8");
-		verifyResult(XMLStreamReaderInputStreamTest.class.getResourceAsStream("hello_world_target.wsdl"), xsris);
+				StaxUtils.createXMLStreamReader(XMLStreamReaderReaderTest.class.getResourceAsStream("hello_world.wsdl"), "utf-8");
+		XMLStreamReaderReader xsris = new XMLStreamReaderReader(reader);
+		verifyResult(new InputStreamReader(XMLStreamReaderReaderTest.class.getResourceAsStream("hello_world_target.wsdl"), "utf-8"), xsris);
 	}
 
-	private void verifyResult(InputStream yours, InputStream mine) {
-		byte[] tmp1 = new byte[512];
-		byte[] tmp2 = new byte[512];
+	private void verifyResult(Reader yours, Reader mine) {
+		char[] tmp1 = new char[512];
+		char[] tmp2 = new char[512];
 		for (;;) {
 			int n1 = 0;
 			int n2 = 0;

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package me.dev.misc.xml.tokenize;
+package de.elakito.misc.xml.tokenize;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -44,9 +44,9 @@ import javax.xml.stream.XMLStreamReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import me.dev.misc.xml.util.AttributedQName;
-import me.dev.misc.xml.util.RecordableReader;
-import me.dev.misc.xml.util.StaxUtils;
+import de.elakito.misc.xml.util.AttributedQName;
+import de.elakito.misc.xml.util.RecordableReader;
+import de.elakito.misc.xml.util.StaxUtils;
 
 /**
  * An iterator to extract a specific XML content/token. The token to be extracted

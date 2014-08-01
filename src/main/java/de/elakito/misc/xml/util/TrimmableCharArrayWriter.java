@@ -17,23 +17,23 @@
  * under the License.
  */
 
-package me.dev.misc.xml.util;
+package de.elakito.misc.xml.util;
 
-import java.io.ByteArrayOutputStream;
+import java.io.CharArrayWriter;
 
-class TrimmableByteArrayOutputStream extends ByteArrayOutputStream {
+class TrimmableCharArrayWriter extends CharArrayWriter {
     public void trim(int head, int tail) {
         System.arraycopy(buf, head, buf, 0, count - head - tail);
         count -= head + tail;
     }
     
-    public byte[] toByteArray(int len) {
-        byte[] b = new byte[len];
-        System.arraycopy(buf, 0, b, 0, len);
-        return b;
+    public char[] toCharArray(int len) {
+        char[] c = new char[len];
+        System.arraycopy(buf, 0, c, 0, len);
+        return c;
     }
 
-    byte[] getByteArray() {
+    char[] getCharArray() {
         return buf;
     }
 }

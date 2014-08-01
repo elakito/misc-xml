@@ -17,25 +17,22 @@
  * under the License.
  */
 
-package me.dev.misc.xml.util;
+package de.elakito.misc.xml.util;
 
-import java.io.FilterInputStream;
+import java.io.FilterReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.Reader;
 
 /**
  * 
  */
-public class RecordableInputStream extends FilterInputStream {
-    private TrimmableByteArrayOutputStream buf;
-    private String charset;
+public class RecordableReader extends FilterReader {
+    private TrimmableCharArrayWriter buf;
     private boolean recording;
 
-    public RecordableInputStream(InputStream in, String charset) {
+    public RecordableReader(Reader in) {
         super(in);
-        this.buf = new TrimmableByteArrayOutputStream();
-        this.charset = charset;
+        this.buf = new TrimmableCharArrayWriter();
         this.recording = true;
     }
 
@@ -49,36 +46,26 @@ public class RecordableInputStream extends FilterInputStream {
     }
 
     @Override
-    public int read(byte[] b, int off, int len) throws IOException {
-        int n = super.read(b, off, len);
+    public int read(char[] cbuf, int off, int len) throws IOException {
+        int n = super.read(cbuf, off, len);
         if (n > 0 && recording) {
-            buf.write(b, off, n);
+            buf.write(cbuf, off, n);
         }
         return n;
     }
 
     public String getText(int pos) {
-        String t = null;
         recording = false;
-        try {
-            if (charset == null) {
-                t = new String(buf.getByteArray(), 0, pos);
-            } else {
-                t = new String(buf.getByteArray(), 0, pos, charset);
-            }
-        } catch (UnsupportedEncodingException e) {
-            // ignore it as this should have be caught while scanning.
-        } finally {
-            buf.trim(pos, 0);
-        }
+        String t = new String(buf.getCharArray(), 0, pos);
+        buf.trim(pos, 0);
         return t;
     }
     
-    public byte[] getBytes(int pos) {
+    public char[] getChars(int pos) {
         recording = false;
-        byte[] b = buf.toByteArray(pos);
+        char[] c = buf.toCharArray(pos);
         buf.trim(pos, 0);
-        return b;
+        return c;
     }
     
     public void record() {

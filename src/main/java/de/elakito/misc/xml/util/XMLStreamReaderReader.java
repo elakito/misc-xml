@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package me.dev.misc.xml.util;
+package de.elakito.misc.xml.util;
 
 import java.io.IOException;
 import java.io.Reader;
