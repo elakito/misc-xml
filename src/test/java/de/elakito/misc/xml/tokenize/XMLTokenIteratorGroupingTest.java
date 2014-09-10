@@ -41,14 +41,14 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "<c:B attr='1' xmlns:c='urn:c'>"
         + "<c:C attr='1'>peach</c:C>"
         + "<c:C attr='2'/>"
-        + "</c:B>"
-        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='3'>orange</c:C>"
         + "<c:C attr='4'/>"
         + "</c:B>"
-        + "<c:B attr='3' xmlns:c='urn:c'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='5'>mango</c:C>"
         + "<c:C attr='6'/>"
+        + "<c:C attr='7'>pear</c:C>"
+        + "<c:C attr='8'/>"
         + "</c:B>"
         + "</g:A>").getBytes();
 
@@ -67,26 +67,38 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:B attr='1' xmlns:c='urn:c'>"
         + "<c:C attr='3'>orange</c:C>"
         + "</c:B>"
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:B attr='1' xmlns:c='urn:c'>"
         + "<c:C attr='4'/>"
         + "</c:B>"
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='3' xmlns:c='urn:c'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='5'>mango</c:C>"
         + "</c:B>"
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='3' xmlns:c='urn:c'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='6'/>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='7'>pear</c:C>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='8'/>"
         + "</c:B>"
         + "</g:A>"};
     
@@ -100,16 +112,23 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:B attr='1' xmlns:c='urn:c'>"
         + "<c:C attr='3'>orange</c:C>"
         + "<c:C attr='4'/>"
         + "</c:B>"
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='3' xmlns:c='urn:c'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='5'>mango</c:C>"
         + "<c:C attr='6'/>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='7'>pear</c:C>"
+        + "<c:C attr='8'/>"
         + "</c:B>"
         + "</g:A>"};
     
@@ -119,19 +138,24 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "<c:B attr='1' xmlns:c='urn:c'>"
         + "<c:C attr='1'>peach</c:C>"
         + "<c:C attr='2'/>"
-        + "</c:B>"
-        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='3'>orange</c:C>"
         + "</c:B>"
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:B attr='1' xmlns:c='urn:c'>"
         + "<c:C attr='4'/>"
         + "</c:B>"
-        + "<c:B attr='3' xmlns:c='urn:c'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='5'>mango</c:C>"
         + "<c:C attr='6'/>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='7'>pear</c:C>"
+        + "<c:C attr='8'/>"
         + "</c:B>"
         + "</g:A>"};
     
@@ -141,17 +165,39 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "<c:B attr='1' xmlns:c='urn:c'>"
         + "<c:C attr='1'>peach</c:C>"
         + "<c:C attr='2'/>"
-        + "</c:B>"
-        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='3'>orange</c:C>"
         + "<c:C attr='4'/>"
         + "</c:B>"
         + "</g:A>",
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
-        + "<c:B attr='3' xmlns:c='urn:c'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
         + "<c:C attr='5'>mango</c:C>"
         + "<c:C attr='6'/>"
+        + "<c:C attr='7'>pear</c:C>"
+        + "<c:C attr='8'/>"
+        + "</c:B>"
+        + "</g:A>"};
+    
+    private static final String[] RESULTS_WRAPPED_SIZE5 = {
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='1' xmlns:c='urn:c'>"
+        + "<c:C attr='1'>peach</c:C>"
+        + "<c:C attr='2'/>"
+        + "<c:C attr='3'>orange</c:C>"
+        + "<c:C attr='4'/>"
+        + "</c:B>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='5'>mango</c:C>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='6'/>"
+        + "<c:C attr='7'>pear</c:C>"
+        + "<c:C attr='8'/>"
         + "</c:B>"
         + "</g:A>"};
     
@@ -161,7 +207,9 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         "<c:C attr='3' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">orange</c:C>",
         "<c:C attr='4' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>",
         "<c:C attr='5' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">mango</c:C>",
-        "<c:C attr='6' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"};
+        "<c:C attr='6' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>",
+        "<c:C attr='7' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">pear</c:C>",
+        "<c:C attr='8' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"};
 
     private static final String[] RESULTS_INJECTED_SIZE2 = {
         "<group>"
@@ -175,6 +223,10 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         "<group>"
         + "<c:C attr='5' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">mango</c:C>"
         + "<c:C attr='6' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+        + "</group>",
+        "<group>"
+        + "<c:C attr='7' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">pear</c:C>"
+        + "<c:C attr='8' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
         + "</group>"};
 
     private static final String[] RESULTS_INJECTED_SIZE3 = {
@@ -187,6 +239,10 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "<c:C attr='4' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
         + "<c:C attr='5' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">mango</c:C>"
         + "<c:C attr='6' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+        + "</group>",
+        "<group>"
+        + "<c:C attr='7' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">pear</c:C>"
+        + "<c:C attr='8' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
         + "</group>"};
 
     private static final String[] RESULTS_INJECTED_SIZE4 = {
@@ -199,6 +255,22 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         "<group>"
         + "<c:C attr='5' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">mango</c:C>"
         + "<c:C attr='6' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+        + "<c:C attr='7' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">pear</c:C>"
+        + "<c:C attr='8' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+        + "</group>"};
+
+    private static final String[] RESULTS_INJECTED_SIZE5 = {
+        "<group>"
+        + "<c:C attr='1' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">peach</c:C>"
+        + "<c:C attr='2' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+        + "<c:C attr='3' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">orange</c:C>"
+        + "<c:C attr='4' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+        + "<c:C attr='5' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">mango</c:C>"
+        + "</group>",
+        "<group>"
+        + "<c:C attr='6' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+        + "<c:C attr='7' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\">pear</c:C>"
+        + "<c:C attr='8' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
         + "</group>"};
 
         private Map<String, String> nsmap;
@@ -233,30 +305,68 @@ public class XMLTokenIteratorGroupingTest extends Assert {
     }
 
     @Test
-    @org.junit.Ignore
-    // not working for now as the context extraction across two ancestor paths is not working
     public void testExtractWrappedSize4() throws Exception {
         invokeAndVerify("//c:C", 
             nsmap, 'w', 4, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE4);
     }
 
+    @Test
+    @org.junit.Ignore
+    // not working for now as the context extraction across two ancestor paths is not working
+    public void testExtractWrappedSize5() throws Exception {
+        invokeAndVerify("//c:C", 
+            nsmap, 'w', 5, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE5);
+    }
+
     // injected mode
     @Test
-    public void testExtractInjecteddSize1() throws Exception {
+    public void testExtractInjectedSize1() throws Exception {
         invokeAndVerify("//c:C", 
             nsmap, 'i', 1, new ByteArrayInputStream(DATA), "utf-8", RESULTS_INJECTED_SIZE1);
     }
 
     @Test
-    public void testExtractInjecteddSize3() throws Exception {
+    public void testExtractInjectedSize2() throws Exception {
+        invokeAndVerify("//c:C", 
+            nsmap, 'i', 2, new ByteArrayInputStream(DATA), "utf-8", RESULTS_INJECTED_SIZE2);
+    }
+
+    @Test
+    public void testExtractInjectedSize3() throws Exception {
         invokeAndVerify("//c:C", 
             nsmap, 'i', 3, new ByteArrayInputStream(DATA), "utf-8", RESULTS_INJECTED_SIZE3);
     }
 
     @Test
-    public void testExtractInjecteddSize4() throws Exception {
+    public void testExtractInjectedSize4() throws Exception {
         invokeAndVerify("//c:C", 
             nsmap, 'i', 4, new ByteArrayInputStream(DATA), "utf-8", RESULTS_INJECTED_SIZE4);
+    }
+
+    @Test
+    public void testExtractInjectedSize5() throws Exception {
+        invokeAndVerify("//c:C", 
+            nsmap, 'i', 5, new ByteArrayInputStream(DATA), "utf-8", RESULTS_INJECTED_SIZE5);
+    }
+
+    @Test
+    @org.junit.Ignore
+    // not working for now as the context extraction for one left-over token is not working
+    public void testExtractWrappedLeftOver() throws Exception {
+    	final byte[] data = ("<?xml version='1.0' encoding='UTF-8'?><g:A xmlns:g='urn:g'><c:B attr='1' xmlns:c='urn:c'>"
+                + "<c:C attr='1'>peach</c:C>"
+    			+ "<c:C attr='2'/>"
+    			+ "<c:C attr='3'>orange</c:C>"
+    			+ "</c:B></g:A>").getBytes();
+    	final String[] results = {"<?xml version='1.0' encoding='UTF-8'?><g:A xmlns:g='urn:g'><c:B attr='1' xmlns:c='urn:c'>"
+    		    + "<c:C attr='1'>peach</c:C><c:C attr='2'/>"
+    			+ "</c:B></g:A>",
+    			"<?xml version='1.0' encoding='UTF-8'?><g:A xmlns:g='urn:g'><c:B attr='1' xmlns:c='urn:c'>"
+    			+ "<c:C attr='3'>orange</c:C>"
+    			+ "</c:B></g:A>",
+    	};
+        invokeAndVerify("//c:C", 
+            nsmap, 'w', 2, new ByteArrayInputStream(data), "utf-8", results);
     }
 
     private static void invokeAndVerify(String path, Map<String, String> nsmap, char mode, int grouping,
