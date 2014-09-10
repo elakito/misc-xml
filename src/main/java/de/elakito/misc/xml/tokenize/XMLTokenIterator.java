@@ -65,14 +65,14 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
     private AttributedQName[] splitpath;
     private int index;
     private char mode;
-    private int grouping;
+    private int group;
     private RecordableReader in;
     private XMLStreamReader reader;
     private List<QName> path;
     private List<Map<String, String>> namespaces;
     private List<String> segments;
     private List<QName> segmentlog;
-    private List<String> group;
+    private List<String> tokens;
     private int code;
     private int consumed;
     private boolean backtrack;
@@ -103,16 +103,16 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
      * @param path the unix like path notation using the QNames
      * @param nsmap the namespace binding map
      * @param mode the extraction mode. One of 'i', 'w', and 'u', representing inject, wrap, and unwrap
-     * @param grouping the number of tokens to be grouped together  
+     * @param group the number of tokens to be grouped together  
      * @param in the input stream
      * @param charset the character encoding
      * @throws XMLStreamException
      * @throws UnsupportedEncodingException 
      */
-    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, int grouping, InputStream in, String charset) 
+    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, int group, InputStream in, String charset) 
             throws XMLStreamException, UnsupportedEncodingException {
         // woodstox's getLocation().etCharOffset() does not return the offset correctly for InputStream, so use Reader instead.
-        this(path, nsmap, mode, grouping, new InputStreamReader(in, charset));
+        this(path, nsmap, mode, group, new InputStreamReader(in, charset));
     }
     
     /**
@@ -134,11 +134,11 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
      * @param path the unix like path notation using the QNames
      * @param nsmap the namespace binding map
      * @param mode the extraction mode. One of 'i', 'w', and 'u', representing inject, wrap, and unwrap
-     * @param grouping the number of tokens to be grouped together
+     * @param group the number of tokens to be grouped together
      * @param in the input reader
      * @throws XMLStreamException
      */
-    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, int grouping, Reader in) throws XMLStreamException {
+    public XMLTokenIterator(String path, Map<String, String> nsmap, char mode, int group, Reader in) throws XMLStreamException {
         final String[] sl = path.substring(1).split("/");
         this.splitpath = new AttributedQName[sl.length];
         for (int i = 0; i < sl.length; i++) {
@@ -152,7 +152,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
             }
         }
         this.mode = mode != 0 ? mode : 'i';
-        this.grouping = grouping > 0 ? grouping : 1;
+        this.group = group > 0 ? group : 1;
         this.in = new RecordableReader(in);
         // use a local staxutils to create a stream reader. This can be replaced if other means is available
         this.reader = StaxUtils.createXMLStreamReader(this.in);
@@ -175,8 +175,8 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
         }
 
         // when grouping the tokens, allocate the storage to temporarily store tokens. 
-        if (this.grouping > 1) {
-                this.group = new ArrayList<String>();
+        if (this.group > 1) {
+                this.tokens = new ArrayList<String>();
         }
         // pre-fetch the initial token to make the iterator gets started.
         this.nextToken = getNextToken();
@@ -311,7 +311,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
 
     private String createContextualToken(String token){
         StringBuilder sb = new StringBuilder();
-        if (mode == 'w' && grouping == 1) {
+        if (mode == 'w' && group == 1) {
             for (int i = 0; i < segments.size(); i++) {
                 sb.append(segments.get(i));
             }
@@ -365,7 +365,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 sb.append(token.substring(ep + 1, bp));
             }
         } else {
-                return token;
+            return token;
         }
         return sb.toString();
     }
@@ -377,7 +377,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
             for (int i = 0; i < segments.size(); i++) {
                 sb.append(segments.get(i));
             }
-            for (String s : group) {
+            for (String s : tokens) {
                 sb.append(s);
             }
             for (int i = path.size() - 1; i >= 0; i--) {
@@ -387,12 +387,12 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
         } else {
             // for injected, unwrapped, text
             sb.append("<group>");
-            for (String s : group) {
+            for (String s : tokens) {
                 sb.append(s);
             }
             sb.append("</group>");
         }
-        group.clear();
+        tokens.clear();
         return sb.toString();
     }
 
@@ -426,9 +426,9 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                         token = getCurrentToken();
                         backtrack = true;
                         trackdepth = depth;
-                        if (grouping > 1) {
-                            group.add(token);
-                            if (grouping == group.size()) {
+                        if (group > 1) {
+                            tokens.add(token);
+                            if (group == tokens.size()) {
                                 return getGroupedToken();
                             }
                         } else {
@@ -482,7 +482,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 break;
             case XMLStreamConstants.END_DOCUMENT:
                 LOG.trace("depth={}", depth);
-                if (grouping > 1 && group.size() > 0) {
+                if (group > 1 && tokens.size() > 0) {
                     // flush the left over before really going EoD
                     code = XMLStreamConstants.END_DOCUMENT;
                     return getGroupedToken();
