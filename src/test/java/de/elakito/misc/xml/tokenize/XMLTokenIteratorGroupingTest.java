@@ -52,6 +52,7 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "</c:B>"
         + "</g:A>").getBytes();
 
+    // one extracted token in its wrapped context per token
     private static final String[] RESULTS_WRAPPED_SIZE1 = {
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
@@ -101,7 +102,8 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "<c:C attr='8'/>"
         + "</c:B>"
         + "</g:A>"};
-    
+
+    // two extracted tokens in their wrapped context per token
     private static final String[] RESULTS_WRAPPED_SIZE2 = {
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
@@ -132,7 +134,39 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "</c:B>"
         + "</g:A>"};
     
-    private static final String[] RESULTS_WRAPPED_SIZE3 = {
+    // at most three extracted tokens in their common wrapped context per token
+    private static final String[] RESULTS_WRAPPED_SIZE3L = {
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='1' xmlns:c='urn:c'>"
+        + "<c:C attr='1'>peach</c:C>"
+        + "<c:C attr='2'/>"
+        + "<c:C attr='3'>orange</c:C>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='1' xmlns:c='urn:c'>"
+        + "<c:C attr='4'/>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='5'>mango</c:C>"
+        + "<c:C attr='6'/>"
+        + "<c:C attr='7'>pear</c:C>"
+        + "</c:B>"
+        + "</g:A>",
+        "<?xml version='1.0' encoding='UTF-8'?>"
+        + "<g:A xmlns:g='urn:g'>"
+        + "<c:B attr='2' xmlns:c='urn:c'>"
+        + "<c:C attr='8'/>"
+        + "</c:B>"
+        + "</g:A>"};
+
+    // three extracted tokens in their corresponding wrapped contexts per token    
+    private static final String[] RESULTS_WRAPPED_SIZE3U = {
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
         + "<c:B attr='1' xmlns:c='urn:c'>"
@@ -158,7 +192,8 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "<c:C attr='8'/>"
         + "</c:B>"
         + "</g:A>"};
-    
+
+    // four extracted tokens in their common wrapped context per token
     private static final String[] RESULTS_WRAPPED_SIZE4 = {
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
@@ -179,7 +214,11 @@ public class XMLTokenIteratorGroupingTest extends Assert {
         + "</c:B>"
         + "</g:A>"};
     
-    private static final String[] RESULTS_WRAPPED_SIZE5 = {
+    // at most five extracted tokens in their common wrapped context per token
+    private static final String[] RESULTS_WRAPPED_SIZE5L = RESULTS_WRAPPED_SIZE4;
+
+    // five extracted tokens in their corresponding wrapped contexts per token
+    private static final String[] RESULTS_WRAPPED_SIZE5U = {
         "<?xml version='1.0' encoding='UTF-8'?>"
         + "<g:A xmlns:g='urn:g'>"
         + "<c:B attr='1' xmlns:c='urn:c'>"
@@ -297,11 +336,17 @@ public class XMLTokenIteratorGroupingTest extends Assert {
     }
 
     @Test
+    public void testExtractWrappedSize3L() throws Exception {
+        invokeAndVerify("//c:C", 
+            nsmap, 'w', 3, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE3L);
+    }
+
+    @Test
     @org.junit.Ignore
     // not working for now as the context extraction across two ancestor paths is not working
-    public void testExtractWrappedSize3() throws Exception {
+    public void testExtractWrappedSize3U() throws Exception {
         invokeAndVerify("//c:C", 
-            nsmap, 'w', 3, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE3);
+            nsmap, 'W', 3, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE3U);
     }
 
     @Test
@@ -311,11 +356,17 @@ public class XMLTokenIteratorGroupingTest extends Assert {
     }
 
     @Test
+    public void testExtractWrappedSize5L() throws Exception {
+        invokeAndVerify("//c:C", 
+            nsmap, 'w', 5, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE5L);
+    }
+
+    @Test
     @org.junit.Ignore
     // not working for now as the context extraction across two ancestor paths is not working
-    public void testExtractWrappedSize5() throws Exception {
+    public void testExtractWrappedSize5U() throws Exception {
         invokeAndVerify("//c:C", 
-            nsmap, 'w', 5, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE5);
+            nsmap, 'W', 5, new ByteArrayInputStream(DATA), "utf-8", RESULTS_WRAPPED_SIZE5U);
     }
 
     // injected mode
@@ -350,7 +401,6 @@ public class XMLTokenIteratorGroupingTest extends Assert {
     }
 
     @Test
-    @org.junit.Ignore
     // not working for now as the context extraction for one left-over token is not working
     public void testExtractWrappedLeftOver() throws Exception {
     	final byte[] data = ("<?xml version='1.0' encoding='UTF-8'?><g:A xmlns:g='urn:g'><c:B attr='1' xmlns:c='urn:c'>"

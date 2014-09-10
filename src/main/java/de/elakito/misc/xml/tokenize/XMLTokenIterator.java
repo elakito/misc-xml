@@ -446,6 +446,13 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 }
                 break;
             case XMLStreamConstants.END_ELEMENT:
+            	if ((backtrack || (trackdepth > 0 && depth == trackdepth))
+            	    && (mode == 'w' && group > 1 && tokens.size() > 0)) {
+            		// flush the left over using the current context
+            		code = XMLStreamConstants.END_ELEMENT;
+            		return getGroupedToken();
+            	}
+
                 depth--;
                 QName endname = reader.getName();
                 LOG.trace("ee={}", endname);
@@ -456,7 +463,7 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
                 
                 int pc = 0;
                 if (backtrack || (trackdepth > 0 && depth == trackdepth - 1)) {
-                    // reactive backtrack if not backtracking and update the track depth
+                    // reactivate backtracking if not backtracking and update the track depth
                     backtrack = true;
                     trackdepth--;
                     if (mode == 'w') {
