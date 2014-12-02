@@ -525,7 +525,8 @@ public class XMLTokenIterator implements Iterator<Object>, Closeable {
         try {
             nextToken = getNextToken();
         } catch (XMLStreamException e) {
-            //
+            nextToken = null;
+            throw new RuntimeException(e);
         }
         return o;
     }
