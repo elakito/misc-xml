@@ -129,11 +129,28 @@ public class XMLTokenIteratorTest extends Assert {
         "<c:child some_attr='f' anotherAttr='f' xmlns:g=\"urn:g\" xmlns:d=\"urn:d\" xmlns:c=\"urn:c\"/>"
     };
 
+    //REVIST how we can handle physical differences (this is what we get with jdk8)
+    private static final String[] RESULTS_CHILD_VAR2 = {
+        "<c:child some_attr='a' anotherAttr='a' xmlns:c=\"urn:c\" xmlns:d=\"urn:d\" xmlns:g=\"urn:g\"></c:child>",
+        "<c:child some_attr='b' anotherAttr='b' xmlns:c=\"urn:c\" xmlns:d=\"urn:d\" xmlns:g=\"urn:g\"/>",
+        "<c:child some_attr='c' anotherAttr='c' xmlns:c=\"urn:c\" xmlns:d=\"urn:d\" xmlns:g=\"urn:g\"></c:child>",
+        "<c:child some_attr='d' anotherAttr='d' xmlns:c=\"urn:c\" xmlns:d=\"urn:d\" xmlns:g=\"urn:g\"/>",
+        "<c:child some_attr='e' anotherAttr='e' xmlns:c=\"urn:c\" xmlns:d=\"urn:d\" xmlns:g=\"urn:g\"></c:child>",
+        "<c:child some_attr='f' anotherAttr='f' xmlns:c=\"urn:c\" xmlns:d=\"urn:d\" xmlns:g=\"urn:g\"/>"
+    };
+
     private static final String[] RESULTS_CHILD_MIXED = {
         "<child some_attr='a' anotherAttr='a' xmlns=\"urn:c\" xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"></child>",
         "<x:child xmlns:x='urn:c' some_attr='b' anotherAttr='b' xmlns='urn:c' xmlns:g='urn:g' xmlns:c='urn:c'/>",
         "<child some_attr='c' anotherAttr='c' xmlns='urn:c' xmlns:g='urn:g' xmlns:c='urn:c'></child>",
         "<c:child some_attr='d' anotherAttr='d' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+    };
+
+    private static final String[] RESULTS_CHILD_MIXED_VAR2 = {
+        "<child some_attr='a' anotherAttr='a' xmlns=\"urn:c\" xmlns:c=\"urn:c\" xmlns:g=\"urn:g\"></child>",
+        "<x:child xmlns:x='urn:c' some_attr='b' anotherAttr='b' xmlns='urn:c' xmlns:c='urn:c' xmlns:g='urn:g'/>",
+        "<child some_attr='c' anotherAttr='c' xmlns='urn:c' xmlns:c='urn:c'xmlns:g='urn:g' ></child>",
+        "<c:child some_attr='d' anotherAttr='d' xmlns:c=\"urn:c\" xmlns:g=\"urn:g\"/>"
     };
 
     private static final String[] RESULTS_CHILD_MIXED_WRAPPED = {
@@ -156,6 +173,11 @@ public class XMLTokenIteratorTest extends Assert {
         "<child some_attr='c' anotherAttr='c' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"></child>",
     };
 
+    private static final String[] RESULTS_CHILD_NO_NS_MIXED_VAR2 = {
+        "<child some_attr='a' anotherAttr='a' xmlns='' xmlns:c='urn:c' xmlns:g='urn:g'></child>",
+        "<child some_attr='c' anotherAttr='c' xmlns:c=\"urn:c\" xmlns:g=\"urn:g\"></child>",
+    };
+
     // note that there is no preceding sibling to the extracted child
     private static final String[] RESULTS_CHILD_NO_NS_MIXED_WRAPPED = {
         "<?xml version='1.0' encoding='UTF-8'?><g:greatgrandparent xmlns:g='urn:g'><grandparent>"
@@ -169,6 +191,11 @@ public class XMLTokenIteratorTest extends Assert {
     private static final String[] RESULTS_CHILD_NS_MIXED = {
         "<x:child xmlns:x='urn:c' some_attr='b' anotherAttr='b' xmlns='urn:c' xmlns:g='urn:g' xmlns:c='urn:c'/>",
         "<c:child some_attr='d' anotherAttr='d' xmlns:g=\"urn:g\" xmlns:c=\"urn:c\"/>"
+    };
+
+    private static final String[] RESULTS_CHILD_NS_MIXED_VAR2 = {
+        "<x:child xmlns:x='urn:c' some_attr='b' anotherAttr='b' xmlns='urn:c' xmlns:c='urn:c' xmlns:g='urn:g'/>",
+        "<c:child some_attr='d' anotherAttr='d' xmlns:c=\"urn:c\" xmlns:g=\"urn:g\"/>"
     };
 
     // note that there is a preceding sibling to the extracted child
@@ -264,7 +291,7 @@ public class XMLTokenIteratorTest extends Assert {
     @Test
     public void testExtractChildInjected() throws Exception {
         invokeAndVerify("//C:child", 
-               nsmap, 'i', new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD);
+               nsmap, 'i', new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD, RESULTS_CHILD_VAR2);
     }
 
     @Test
@@ -276,7 +303,7 @@ public class XMLTokenIteratorTest extends Assert {
     @Test
     public void testExtractChildNSMixedInjected() throws Exception {
         invokeAndVerify("//*:child", 
-               nsmap, 'i', new ByteArrayInputStream(DATA_NS_MIXED), "utf-8", RESULTS_CHILD_MIXED);
+               nsmap, 'i', new ByteArrayInputStream(DATA_NS_MIXED), "utf-8", RESULTS_CHILD_MIXED, RESULTS_CHILD_MIXED_VAR2);
     }
 
     @Test
@@ -288,7 +315,7 @@ public class XMLTokenIteratorTest extends Assert {
     @Test
     public void testExtractCxxxd() throws Exception {
         invokeAndVerify("//C:c*d", 
-               nsmap, 'i', new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD);
+               nsmap, 'i', new ByteArrayInputStream(DATA), "utf-8", RESULTS_CHILD, RESULTS_CHILD_VAR2);
     }
 
     @Test
@@ -306,7 +333,7 @@ public class XMLTokenIteratorTest extends Assert {
     @Test
     public void testExtractSomeUnqualifiedChildInjected() throws Exception {
         invokeAndVerify("//child", 
-               nsmap, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED);
+               nsmap, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED, RESULTS_CHILD_NO_NS_MIXED_VAR2);
     }
 
     @Test
@@ -320,13 +347,13 @@ public class XMLTokenIteratorTest extends Assert {
     public void testExtractSomeQualifiedChildInjected() throws Exception {
         nsmap.put("", "urn:c");
         invokeAndVerify("//child", 
-               nsmap, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NS_MIXED);
+               nsmap, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NS_MIXED, RESULTS_CHILD_NS_MIXED_VAR2);
     }
 
     @Test
     public void testExtractWithNullNamespaceMap() throws Exception {
         invokeAndVerify("//child", 
-               null, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED);
+               null, 'i', new ByteArrayInputStream(DATA_NO_NS_MIXED), "utf-8", RESULTS_CHILD_NO_NS_MIXED, RESULTS_CHILD_NO_NS_MIXED_VAR2);
     }
 
     @Test
@@ -417,7 +444,12 @@ public class XMLTokenIteratorTest extends Assert {
     }
 
     private static void invokeAndVerify(String path, Map<String, String> nsmap, char mode,
-                                        InputStream in, String charset, String[] expected) 
+            InputStream in, String charset, String[] expected) throws Exception {
+        invokeAndVerify(path, nsmap, mode, in, charset, expected, null);
+    }
+
+    private static void invokeAndVerify(String path, Map<String, String> nsmap, char mode,
+                                        InputStream in, String charset, String[] expected, String[] expected2)
         throws Exception {
 
         XMLTokenIterator tokenizer = new XMLTokenIterator(path, nsmap, mode, in, charset);
@@ -432,7 +464,11 @@ public class XMLTokenIteratorTest extends Assert {
         
         assertEquals("token count", expected.length, results.size());
         for (int i = 0; i < expected.length; i++) {
-            assertEquals("mismatch [" + i + "]", expected[i], results.get(i));
+            if (expected2 != null) {
+                assertTrue("mismatch [" + i + "]", expected[i].equals(results.get(i)) || expected2[i].equals(results.get(i)));
+            } else {
+                assertEquals("mismatch [" + i + "]", expected[i], results.get(i));
+            }
         }
     }
 }
