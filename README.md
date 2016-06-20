@@ -3,6 +3,7 @@ misc-xml
 
 Place for putting some xml related coding experience.
 
+### Content ###
 Currently. it contains
 - XMLTokenIterator: An iterator that can iterate over an XML document to extract 
   a series of elements matched by the specified path expression. The patch expression
@@ -33,3 +34,12 @@ Currently. it contains
         }
         ((Closeable)tokenizer).close();
 ```
+
+### Note ###
+
+A slightly modified version of XMLTokenIterator has been contributed to Apache Camel with [CAMEL-7468](https://issues.apache.org/jira/browse/CAMEL-7468).
+
+There is a dedicated package for testing and comparing its performance at [https://github.com/elakito/testzone/tree/master/tests/camel_xmltokenize_comaprison](https://github.com/elakito/testzone/tree/master/tests/camel_xmltokenize_comaprison)
+
+A slightly modified version of these input transformers have been contributed to Apache Camel with [CAMEL-10070](https://issues.apache.org/jira/browse/CAMEL-10070)
+
