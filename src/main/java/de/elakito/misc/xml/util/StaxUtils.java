@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -34,8 +36,8 @@ import javax.xml.stream.XMLStreamWriter;
  * This is a local stax utility class for providing some stax related utility methods.
  */
 public final class StaxUtils {
-    private static final XMLInputFactory infactory = XMLInputFactory.newFactory();
-    private static final XMLOutputFactory outfactory = XMLOutputFactory.newFactory();
+    private static final XMLInputFactory infactory = XMLInputFactory.newInstance();
+    private static final XMLOutputFactory outfactory = XMLOutputFactory.newInstance();
     
     private StaxUtils() {
     }
@@ -87,6 +89,56 @@ public final class StaxUtils {
             return outfactory.createXMLStreamWriter(out);
         } catch (XMLStreamException e) {
             throw new RuntimeException("Couldn't create a stream writer.", e);
+        }
+    }
+
+    public static XMLEventReader createXMLEventReader(InputStream in) {
+        try {
+            return infactory.createXMLEventReader(in);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a event reader.", e);
+        }
+    }
+
+    public static XMLEventReader createXMLEventReader(InputStream in, String encoding) {
+        try {
+            return infactory.createXMLEventReader(in, encoding);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a event reader.", e);
+        }
+
+    }
+
+    public static XMLEventReader createXMLEventReader(Reader in) {
+        try {
+            return infactory.createXMLEventReader(in);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a event reader.", e);
+        }
+    }
+
+    public static XMLEventWriter createXMLEventWriter(OutputStream out) {
+        try {
+            return outfactory.createXMLEventWriter(out);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a event writer.", e);
+        }
+    }
+
+    public static XMLEventWriter createXMLEventWriter(OutputStream out, String encoding) {
+        try {
+            return outfactory.createXMLEventWriter(out, encoding);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a event writer.", e);
+        }
+
+    }
+
+    public static XMLEventWriter createXMLEventWriter(Writer out) {
+        try {
+            return outfactory.createXMLEventWriter(out);
+        } catch (XMLStreamException e) {
+            throw new RuntimeException("Couldn't create a event writer.", e);
         }
     }
 }
